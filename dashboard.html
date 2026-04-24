@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+<<<<<<< feat/12-estilo-diseño-dashboard
 
 <head>
     <meta charset="UTF-8">
@@ -48,4 +49,45 @@
 
 </body>
 
+=======
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+</head>
+<body>
+
+<h2 id="bienvenida"></h2>
+
+<div id="formExtra" style="display:none;">
+    <h2>¡Hola! Es tu primera vez aquí. Necesitamos estos datos para poder continuar.</h2>
+    <input type="text" id="nombre" placeholder="Nombre" required>
+    <input type="text" id="apellido" placeholder="Apellido" required>
+    <input type="number" id="edad" placeholder="Edad" min="5" max="15" required>
+
+    <select id="rol">
+        <option value="estudiante">Estudiante</option>
+        <option value="docente">Docente</option>
+    </select>
+
+    <select id="grado" required>
+        <option value="">Selecciona grado</option>
+        <option value="primero">Primero</option>
+        <option value="segundo">Segundo</option>
+    </select>
+
+    <button id="btnGuardar">Guardar perfil</button>
+</div>
+
+<button id="btnLogout">Cerrar sesión</button>
+
+<p id="msg"></p>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="js/supabase.js" defer></script>
+<script src="js/auth.js" defer></script>
+<script src="js/dashboard.js" defer></script>
+
+</body>
+>>>>>>> dev
 </html>
