@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: radial-gradient(circle at top left, #84d2ff 0%, #558bff 45%, #372bb0 100%);
+    font-family: 'Fredoka', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.game-shell {
+    width: min(900px, 100%);
+}
+
+.game-card {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+    padding: 28px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.game-header h1 {
+    font-size: 2.2rem;
+    color: white;
+}
+
+.game-header p {
+    color: #eff8ff;
+    margin-top: 10px;
+    max-width: 520px;
+}
+
+.header-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.primary-btn,
+.secondary-btn,
+.danger-btn {
+    border: none;
+    border-radius: 16px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #76d1ff, #ffdf7b);
+    color: #1e1e1e;
+}
+
+.secondary-btn {
+    background: rgba(255, 255, 255, 0.16);
+    color: white;
+}
+
+.danger-btn {
+    background: #ff5b7b;
+    color: white;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+    color: #eef7ff;
+}
+
+.question-card,
+.end-screen {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 26px;
+    padding: 26px;
+}
+
+.question-card h2 {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.question-card input {
+    width: 100%;
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.feedback {
+    margin-top: 10px;
+    min-height: 28px;
+    color: white;
+    font-weight: 700;
+}
+
+.feedback.correct {
+    color: #a4ffb7;
+}
+
+.feedback.wrong {
+    color: #ffbbc2;
+}
+
+.end-screen h2 {
+    color: #fff7b9;
+    margin-bottom: 12px;
+}
+
+.end-screen p {
+    margin-bottom: 14px;
+    color: #f5f8ff;
+    line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+    .game-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .game-info {
+        flex-direction: column;
+    }
+
+    .header-buttons {
+        justify-content: flex-start;
+    }
+}
