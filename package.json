@@ -1,12 +1,12 @@
 {
-  "name": "proyectmathapp",
-  "private": true,
-  "version": "1.0.0",
-  "scripts": {
-    "start": "node backend/server.js"
-  },
-  "dependencies": {
-    "@supabase/ssr": "^0.10.2",
-    "@supabase/supabase-js": "^2.104.0"
-  }
+"name": "proyectmathapp",
+"private": true,
+"version": "1.0.0",
+"scripts": {
+"start": "node backend/server.js"
+},
+"dependencies": {
+"@supabase/ssr": "^0.10.2",
+"@supabase/supabase-js": "^2.104.0"
+}
 }
