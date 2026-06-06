@@ -41,10 +41,9 @@ async function initGame() {
 
     profileGrade = profile.grado || 'primero';
     const name = profile.nombre || 'Estudiante';
-    document.getElementById('userGreeting').innerText = `¡Hola ${name}! Vamos a practicar sumas. Elige la respuesta correcta para avanzar.`;
+    document.getElementById('userGreeting').innerText = `¡Hola ${name}! Vamos a practicar multiplicaciones.`;
 
     if (profileGrade === 'segundo') totalRounds = 7;
-
     renderRound();
 }
 
@@ -52,16 +51,14 @@ function randomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function generateQuestion(grade) {
-    const max = grade === 'segundo' ? 25 : 15;
-    const min = 10;
-    const a = randomNumber(min, max);
-    const b = randomNumber(min, max);
-    return { a, b, answer: a + b };
+function generateQuestion() {
+    const a = randomNumber(2, 8);
+    const b = randomNumber(2, 8);
+    return { a, b, answer: a * b };
 }
 
 function renderRound() {
-    const q = generateQuestion(profileGrade);
+    const q = generateQuestion();
     currentAnswer = q.answer;
     currentA = q.a;
     currentB = q.b;
@@ -72,9 +69,8 @@ function renderRound() {
     const answerInput = document.getElementById('answerInput');
     const verifyButton = document.getElementById('verifyButton');
 
-    document.getElementById('questionText').innerText = `${q.a} + ${q.b}`;
+    document.getElementById('questionText').innerText = `${q.a} × ${q.b}`;
     document.getElementById('roundText').innerText = `Pregunta ${currentRound} de ${totalRounds}`;
-
     if (feedback) {
         feedback.innerText = '';
         feedback.className = 'feedback';
@@ -101,10 +97,8 @@ function renderRound() {
 function clearFeedback() {
     const feedback = document.getElementById('feedback');
     if (!feedback) return;
-
     feedback.innerText = '';
     feedback.className = 'feedback';
-
     if (feedbackTimeout) {
         clearTimeout(feedbackTimeout);
         feedbackTimeout = null;
@@ -137,7 +131,7 @@ async function handleAnswer() {
     if (correct) {
         if (!questionNeedsCorrecting) earnedPoints += pointsPerCorrect;
         if (feedback) {
-            feedback.innerText = `¡Muy bien! ${currentA} + ${currentB} = ${currentAnswer}.`;
+            feedback.innerText = `¡Muy bien! ${currentA} × ${currentB} es ${currentAnswer}.`;
             feedback.classList.add('correct');
             feedback.classList.remove('wrong');
         }
@@ -162,14 +156,13 @@ async function handleAnswer() {
         }
     }
 
-    answersLog.push({ question: `${currentA} + ${currentB}`, respuesta: answerValue, correct });
+    answersLog.push({ question: `${currentA} × ${currentB}`, respuesta: answerValue, correct });
 
     if (feedback) {
         feedbackTimeout = setTimeout(clearFeedback, 3000);
     }
 
     if (actionButton) {
-        actionButton.onclick = null;
         actionButton.onclick = async () => {
             if (lastAnswerCorrect) {
                 if (currentRound >= totalRounds) {
@@ -203,6 +196,10 @@ async function finishGame() {
 
     const progress = await saveProgress();
     document.getElementById('newTotalText').innerText = `Tu total ahora es ${progress.puntos} xp.`;
+
+    if (window.parent !== window) {
+        window.parent.postMessage({ type: 'gameCompleted', earnedPoints: earnedPoints, totalPoints: progress.puntos }, '*');
+    }
 }
 
 function getProgressLevel(points) {
@@ -235,7 +232,9 @@ async function saveProgress() {
             .eq('user_id', userId)
             .maybeSingle();
 
-        if (selectError) console.error('Error buscando progreso:', selectError);
+        if (selectError) {
+            console.error('Error buscando progreso:', selectError);
+        }
 
         if (existing) {
             totalPoints = parseInt(existing.puntos || 0, 10) + parseInt(earnedPoints, 10);
@@ -246,15 +245,29 @@ async function saveProgress() {
                 .eq('user_id', userId)
                 .select('puntos')
                 .maybeSingle();
-            if (!updateError && updated && updated.puntos) totalPoints = parseInt(updated.puntos, 10);
+
+            if (updateError) {
+                console.error('Error actualizando progreso:', updateError);
+            } else if (updated && updated.puntos) {
+                totalPoints = parseInt(updated.puntos, 10);
+            }
         } else {
-            const payload = { user_id: userId, puntos: totalPoints, nivel: level };
+            const payload = {
+                user_id: userId,
+                puntos: totalPoints,
+                nivel: level
+            };
             const { data: inserted, error: insertError } = await supabase
                 .from('progreso')
                 .insert([payload])
                 .select('puntos')
                 .maybeSingle();
-            if (!insertError && inserted && inserted.puntos) totalPoints = parseInt(inserted.puntos, 10);
+
+            if (insertError) {
+                console.error('Error insertando progreso:', insertError);
+            } else if (inserted && inserted.puntos) {
+                totalPoints = parseInt(inserted.puntos, 10);
+            }
         }
     } catch (err) {
         console.error('Error en saveProgress:', err);
@@ -268,8 +281,14 @@ async function saveProgress() {
             correcta: item.correct,
             fecha: new Date().toISOString()
         }));
-        const { error: resultsError } = await supabase.from('resultados').insert(resultados);
-        if (resultsError) console.error('Error guardando resultados:', resultsError);
+
+        const { error: resultsError } = await supabase
+            .from('resultados')
+            .insert(resultados);
+
+        if (resultsError) {
+            console.error('Error guardando resultados:', resultsError);
+        }
     } catch (err) {
         console.error('Error guardando resultados:', err);
     }

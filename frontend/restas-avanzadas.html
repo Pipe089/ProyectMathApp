@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Sumas avanzadas</title>
+    <title>Restas avanzadas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles/sumas-avanzadas.css">
+    <link rel="stylesheet" href="styles/restas-avanzadas.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -12,7 +12,7 @@
         <section class="game-card">
             <header class="game-header">
                 <div>
-                    <h1>Sumas Avanzadas</h1>
+                    <h1>Restas Avanzadas</h1>
                     <p id="userGreeting">¡Vamos a jugar y aprender juntos!</p>
                 </div>
             </header>
@@ -26,11 +26,11 @@
 
                 <div class="answer-row">
                     <input id="answerInput" type="number" inputmode="numeric" placeholder="Escribe tu respuesta" />
-                    <button id="verifyButton" type="button" class="primary-btn">Verificar</button>
+                    <button id="verifyButton" class="primary-btn">Verificar</button>
                 </div>
 
                 <p id="feedback" class="feedback"></p>
-                <button id="actionButton" type="button" class="primary-btn" style="display:none;">Siguiente</button>
+                <button id="actionButton" class="primary-btn" style="display:none;">Siguiente</button>
             </div>
 
             <div id="endScreen" class="end-screen" style="display:none;">
@@ -43,6 +43,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="js/auth.js" defer></script>
-    <script src="js/sumas-avanzadas.js" defer></script>
+    <script src="js/restas-avanzadas.js" defer></script>
 </body>
 </html>

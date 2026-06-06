@@ -147,8 +147,8 @@ function renderModules(profile) {
         ],
         segundo: [
             { subtitle: "10 al 25", title: "Sumas avanzadas", desc: "Sumas más grandes.", icon: "➕", page: "sumas-avanzadas.html" },
-            { subtitle: "10 al 20", title: "Restas avanzadas", desc: "Opera restas complejas.", icon: "➖", page: "" },
-            { subtitle: "Tablas", title: "Multiplicaciones", desc: "Las primeras mult.", icon: "✖️", page: "" },
+            { subtitle: "10 al 20", title: "Restas avanzadas", desc: "Opera restas complejas.", icon: "➖", page: "restas-avanzadas.html" },
+            { subtitle: "Tablas", title: "Multiplicaciones", desc: "Las primeras mult.", icon: "✖️", page: "multiplicaciones.html" },
             { subtitle: "5 en 5", title: "Series de 5 en 5", desc: "Patrones numéricos.", icon: "5️⃣", page: "" }
         ]
     };

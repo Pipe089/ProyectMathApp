@@ -1,0 +1,278 @@
+:root{
+    --bg-1: #ffd7a8;
+    --bg-2: #ff9bb3;
+    --accent-1: #5ad7ff;
+    --accent-2: #ffd24a;
+    --muted: #5b6b8a;
+    --radius-xl: 36px;
+    --radius-lg: 24px;
+    --big: 1.6rem;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top left,#8be9ff 0%,#b8f5ff 25%,#fff5b8 70%);
+    font-family:'Fredoka','Baloo 2',system-ui,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:28px;
+}
+
+.game-shell{
+    width:min(950px,100%);
+}
+
+.game-card{
+    background:linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #fff9c4 50%,
+        #dff6ff 100%
+    );
+    border-radius:var(--radius-xl);
+    padding:32px;
+    border:6px solid #fff8dc;
+    box-shadow:
+        0 18px 40px rgba(17,24,39,0.12),
+        0 8px 20px rgba(0,0,0,0.08);
+}
+
+.game-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+    margin-bottom:24px;
+}
+
+.game-header h1{
+    font-size:3rem;
+    color:#123049;
+}
+
+.game-header p{
+    color:var(--muted);
+    margin-top:8px;
+    font-size:1.5rem;
+}
+
+.header-buttons{
+    display:flex;
+    flex-direction:row;
+    gap:14px;
+    align-items:center;
+}
+
+.primary-btn,
+.secondary-btn,
+.danger-btn{
+    border:none;
+    border-radius:20px;
+    padding:16px 24px;
+    cursor:pointer;
+    font-size:1.15rem;
+    font-weight:800;
+    min-width:180px;
+    justify-content:center;
+    display:flex;
+    align-items:center;
+    transition:.2s;
+    box-shadow:0 8px 18px rgba(0,0,0,.12);
+}
+
+.primary-btn:hover,
+.secondary-btn:hover,
+.danger-btn:hover{
+    transform:translateY(-3px);
+}
+
+.primary-btn{
+    background:linear-gradient(
+        135deg,
+        #4ade80,
+        #fde047
+    );
+    color:#123049;
+}
+
+.secondary-btn{
+    background:linear-gradient(
+        135deg,
+        #67e8f9,
+        #a5f3fc
+    );
+    color:#123049;
+}
+
+.danger-btn{
+    background:linear-gradient(
+        135deg,
+        #ffb3c7,
+        #ff8fab
+    );
+    color:#123049;
+}
+
+.game-info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:18px;
+    color:#334155;
+    font-size:1.1rem;
+    font-weight:700;
+}
+
+.question-card{
+    background:linear-gradient(
+        180deg,
+        #fff7ed,
+        #fefce8
+    );
+    border:4px solid #fde68a;
+    border-radius:24px;
+    padding:28px;
+}
+
+.question-card h2{
+    color:#123049;
+    font-size:2.5rem;
+    margin-bottom:20px;
+}
+
+.question-card input{
+    width:100%;
+    border:5px dashed #a5f3fc;
+    border-radius:18px;
+    padding:20px;
+    font-size:2rem;
+    font-weight:800;
+    text-align:center;
+    background:white;
+    margin-bottom:14px;
+}
+
+.question-card input::placeholder{
+    color:#b6c7d6;
+}
+
+.answer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.answer-row input {
+    flex: 1 1 220px;
+    min-width: 180px;
+    border-radius: 18px;
+    border: 5px dashed #a5f3fc;
+    padding: 18px;
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    background: white;
+}
+
+.answer-row button {
+    min-width: 180px;
+}
+
+.feedback {
+    margin-top: 15px;
+    min-height: 50px;
+    padding: 12px;
+
+    border-radius: 15px;
+
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.feedback.correct {
+    background: #dcfce7;
+    border: 3px solid #22c55e;
+    color: #15803d;
+}
+
+.feedback.wrong {
+    background: #ffe4e6;
+    border: 3px solid #fb7185;
+    color: #be123c;
+}
+
+.end-screen{
+    background:linear-gradient(
+        180deg,
+        #fff7ed,
+        #fef3c7
+    );
+    border-radius:24px;
+    padding:28px;
+}
+
+.end-screen h2{
+    color:#f59e0b;
+    margin-bottom:12px;
+    font-size:2rem;
+}
+
+.end-screen p{
+    color:#334155;
+    line-height:1.5;
+}
+
+@media (max-width:720px){
+
+    .game-header{
+        flex-direction:column;
+    }
+
+    .header-buttons{
+        width:100%;
+        flex-direction:column;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .danger-btn{
+        width:100%;
+    }
+
+    .game-info{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .game-header h1{
+        font-size:2.2rem;
+    }
+
+    .question-card h2{
+        font-size:2rem;
+    }
+
+    .question-card input{
+        font-size:1.6rem;
+    }
+
+}
+#userGreeting{
+    border-radius: 15px;
+    padding: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #123049;
+}
