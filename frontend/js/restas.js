@@ -39,7 +39,7 @@ async function initGame() {
     profileGrade = profile.grado || 'primero';
     const name = profile.nombre || 'Estudiante';
     const userGreeting = document.getElementById('userGreeting');
-    if (userGreeting) userGreeting.innerText = `¡Hola ${name}! Vamos a practicar con manzanas: elige la respuesta correcta para avanzar.`;
+    if (userGreeting) userGreeting.innerText = `¡Hola ${name}! Vamos a practicar con peras: elige la respuesta correcta para avanzar.`;
 
     if (profileGrade === 'segundo') totalRounds = 7;
 
@@ -54,8 +54,8 @@ function generateQuestion(grade) {
     const max = grade === 'segundo' ? 20 : 10;
     const min = 1;
     const a = randomNumber(min, Math.min(6, max)); // keep groups small and countable
-    const b = randomNumber(min, Math.min(6, max));
-    return { a, b, answer: a + b };
+    const b = randomNumber(1, Math.min(a, 6)); // b must be <= a for positive result
+    return { a, b, answer: a - b };
 }
 
 function makeChoices(correct, grade) {
@@ -88,20 +88,20 @@ function renderRound() {
     const feedback = document.getElementById('feedback');
     const actionButton = document.getElementById('actionButton');
 
-    if (qText) qText.innerText = `Si tengo ${q.a} manzanas y me regalan ${q.b}, ¿cuántas tengo?`;
+    if (qText) qText.innerText = `Si tengo ${q.a} peras y me como ${q.b}, ¿cuántas me quedan?`;
     if (roundText) roundText.innerText = `Pregunta ${currentRound} de ${totalRounds}`;
     if (feedback) { feedback.innerText = ''; feedback.className = 'feedback'; }
     if (actionButton) { actionButton.style.display = 'none'; actionButton.disabled = false; }
     
     questionNeedsCorrecting = false;
 
-    // render apples
-    const left = document.getElementById('applesLeft');
-    const right = document.getElementById('applesRight');
+    // render pears
+    const left = document.getElementById('pearsLeft');
+    const right = document.getElementById('pearsRight');
     if (left) left.innerHTML = '';
     if (right) right.innerHTML = '';
-    for (let i = 0; i < q.a; i++) if (left) left.insertAdjacentHTML('beforeend', '<span class="apple">🍎</span>');
-    for (let i = 0; i < q.b; i++) if (right) right.insertAdjacentHTML('beforeend', '<span class="apple">🍎</span>');
+    for (let i = 0; i < q.a; i++) if (left) left.insertAdjacentHTML('beforeend', '<span class="pear">🍐</span>');
+    for (let i = 0; i < q.b; i++) if (right) right.insertAdjacentHTML('beforeend', '<span class="pear">🍐</span>');
 
     // render choices (numbers only)
     const options = document.getElementById('options');
@@ -153,7 +153,7 @@ async function handleChoice(answerValue, btn) {
             earnedPoints += pointsPerCorrect;
         }
         if (feedback) {
-            feedback.innerText = `¡Muy bien! Si tengo ${currentA} manzanas y me regalan ${currentB}, ahora tengo ${currentAnswer}.`;
+            feedback.innerText = `¡Muy bien! Si tengo ${currentA} peras y me como ${currentB}, me quedan ${currentAnswer}.`;
             feedback.classList.add('correct');
         }
         if (btn) btn.classList.add('selected-correct');
@@ -164,7 +164,7 @@ async function handleChoice(answerValue, btn) {
     } else {
         questionNeedsCorrecting = true;
         if (feedback) {
-            feedback.innerText = `Casi... Si tengo ${currentA} manzanas y me regalan ${currentB}, ahora tengo ${currentAnswer}. Presiona corregir para intentarlo otra vez.`;
+            feedback.innerText = `Casi... Si tengo ${currentA} peras y me como ${currentB}, me quedan ${currentAnswer}. Presiona corregir para intentarlo otra vez.`;
             feedback.classList.add('wrong');
         }
         if (btn) btn.classList.add('selected-wrong');
@@ -174,7 +174,7 @@ async function handleChoice(answerValue, btn) {
         }
     }
 
-    answersLog.push({ question: `${currentA} + ${currentB}`, respuesta: answerValue, correct });
+    answersLog.push({ question: `${currentA} - ${currentB}`, respuesta: answerValue, correct });
 
     if (actionButton) {
         actionButton.onclick = async () => {
@@ -216,6 +216,7 @@ async function finishGame() {
         }, '*');
     }
 }
+
 function getProgressLevel(points) {
     points = parseInt(points, 10) || 0;
     if (points < 50) return '🌱 Semilla';

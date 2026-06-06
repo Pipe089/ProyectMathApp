@@ -116,15 +116,28 @@ async function finishGame() {
     document.getElementById('newTotalText').innerText = `Tu total ahora es ${progress.puntos} xp.`;
 }
 
+function getProgressLevel(points) {
+    points = parseInt(points, 10) || 0;
+    if (points < 50) return '🌱 Semilla';
+    if (points < 200) return '📘 Novato';
+    if (points < 500) return '🌟 Aprendiz';
+    if (points < 1000) return '🔆 Practicante';
+    if (points < 2000) return '🔥 Experto';
+    if (points < 3500) return '👑 Maestro';
+    if (points < 5000) return '💠 Gran Maestro';
+    return '💎 Leyenda';
+}
+
 async function saveProgress() {
     const supabase = window.supabaseClient;
     if (!supabase) {
         console.error('Supabase no cargó en saveProgress');
-        return { puntos: earnedPoints, nivel: 'Sumas avanzadas' };
+        const fallbackPoints = parseInt(earnedPoints, 10) || 0;
+        return { puntos: fallbackPoints, nivel: getProgressLevel(fallbackPoints) };
     }
 
-    const level = 'Sumas avanzadas';
     let totalPoints = parseInt(earnedPoints, 10);
+    let level = getProgressLevel(totalPoints);
 
     try {
         // Buscar si ya existe progreso
@@ -141,11 +154,12 @@ async function saveProgress() {
         if (existing) {
             // Actualizar progreso existente
             totalPoints = parseInt(existing.puntos || 0, 10) + parseInt(earnedPoints, 10);
+            level = getProgressLevel(totalPoints);
             console.log(`Actualizando progreso: ${existing.puntos} + ${earnedPoints} = ${totalPoints}`);
             
             const { data: updated, error: updateError } = await supabase
                 .from('progreso')
-                .update({ puntos: totalPoints })
+                .update({ puntos: totalPoints, nivel: level })
                 .eq('user_id', userId)
                 .select('puntos')
                 .maybeSingle();
@@ -160,14 +174,12 @@ async function saveProgress() {
             }
         } else {
             // Insertar nuevo progreso
-            console.log(`Insertando nuevo progreso: user_id=${userId}, puntos=${totalPoints}, nivel=${level}`);
-            
             const payload = {
                 user_id: userId,
                 puntos: totalPoints,
                 nivel: level
             };
-            console.log('Payload a insertar:', payload);
+            console.log(`Insertando nuevo progreso: user_id=${userId}, puntos=${totalPoints}, nivel=${level}`);
             
             const { data: inserted, error: insertError } = await supabase
                 .from('progreso')
@@ -177,7 +189,6 @@ async function saveProgress() {
 
             if (insertError) {
                 console.error('Error insertando progreso:', insertError);
-                console.log('Reintentando con valores fijos...');
             } else {
                 console.log('Progreso insertado:', inserted);
                 if (inserted && inserted.puntos) {
