@@ -11,7 +11,7 @@ body {
     color: #0f1724;
     min-height: 100vh;
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .background-animation {
@@ -90,9 +90,12 @@ body {
 }
 
 @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-28px);
     }
@@ -115,12 +118,12 @@ body {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    box-shadow: 2px 0 8px rgba(16,24,40,0.04);
+    box-shadow: 2px 0 8px rgba(16, 24, 40, 0.04);
 }
 
 .sidebar-top {
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .brand-logo {
@@ -131,7 +134,9 @@ body {
     font-weight: 800;
 }
 
-.logo-icon { display:none; }
+.logo-icon {
+    display: none;
+}
 
 .brand-icon {
     width: 96px;
@@ -141,7 +146,9 @@ body {
     margin: 0 auto;
 }
 
-.logo-text { display:none; }
+.logo-text {
+    display: none;
+}
 
 .logo-main {
     font-size: 18px;
@@ -165,7 +172,7 @@ body {
     gap: 12px;
     padding: 12px 14px;
     border-radius: 12px;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -174,7 +181,7 @@ body {
 
 .nav-item:hover,
 .nav-item.active {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     color: white;
 }
 
@@ -187,16 +194,19 @@ body {
     flex-direction: column;
     gap: 16px;
     padding-top: 16px;
-    border-top: 1px solid rgba(255,255,255,0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .mascot-area {
     text-align: center;
     padding: 20px 10px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 14px;
 }
-.mascot-emoji { display:none; }
+
+.mascot-emoji {
+    display: none;
+}
 
 .mascot-img {
     width: 160px;
@@ -208,9 +218,9 @@ body {
 
 .logout-btn {
     padding: 10px 12px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     color: white;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
@@ -219,7 +229,7 @@ body {
 }
 
 .logout-btn:hover {
-    background: rgba(255,255,255,0.3);
+    background: rgba(255, 255, 255, 0.3);
 }
 
 /* TOP HEADER */
@@ -360,7 +370,7 @@ body {
     background: white;
     padding: 32px;
     border-radius: 18px;
-    box-shadow: 0 4px 16px rgba(16,24,40,0.08);
+    box-shadow: 0 4px 16px rgba(16, 24, 40, 0.08);
     max-width: 600px;
 }
 
@@ -422,7 +432,7 @@ body {
 
 .hero-subtitle {
     color: #64748b;
-    font-size: 15px;
+    font-size: 20px;
     margin: 0;
 }
 
@@ -443,8 +453,15 @@ body {
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
 }
 
 /* PROGRESS CARD MORADA */
@@ -457,7 +474,7 @@ body {
     border-radius: 16px;
     color: white;
     margin-bottom: 32px;
-    box-shadow: 0 8px 24px rgba(124,58,237,0.2);
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2);
 }
 
 .progress-left,
@@ -471,7 +488,7 @@ body {
     font-size: 32px;
     width: 50px;
     height: 50px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -503,7 +520,7 @@ body {
 .progress-bar {
     width: 180px;
     height: 10px;
-    background: rgba(255,255,255,0.18);
+    background: rgba(255, 255, 255, 0.18);
     border-radius: 999px;
     overflow: hidden;
 }
@@ -523,7 +540,7 @@ body {
 .progress-divider {
     width: 1px;
     height: 40px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* MODULES SECTION */
@@ -547,7 +564,7 @@ body {
 
 .modules-subtitle {
     color: #64748b;
-    font-size: 14px;
+    font-size: 18px;
     margin: 0;
 }
 
@@ -570,7 +587,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    box-shadow: 0 2px 8px rgba(16,24,40,0.06);
+    box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
@@ -578,13 +595,24 @@ body {
 
 .module-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(16,24,40,0.12);
+    box-shadow: 0 8px 24px rgba(16, 24, 40, 0.12);
 }
 
-.module-card.card-1 { background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%); }
-.module-card.card-2 { background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%); }
-.module-card.card-3 { background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%); }
-.module-card.card-4 { background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%); }
+.module-card.card-1 {
+    background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%);
+}
+
+.module-card.card-2 {
+    background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+}
+
+.module-card.card-3 {
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+}
+
+.module-card.card-4 {
+    background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+}
 
 .module-card .subtitle {
     font-size: 11px;

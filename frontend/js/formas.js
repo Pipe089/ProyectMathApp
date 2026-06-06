@@ -6,13 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
 let currentRound = 1;
 let totalRounds = 5;
 let earnedPoints = 0;
-let currentAnswer = 0;
-let currentA = 0;
-let currentB = 0;
+let currentAnswer = '';
+let currentShape = {};
 let userId = null;
 let profileGrade = 'primero';
 const pointsPerCorrect = 20;
 const answersLog = [];
+let usedShapes = [];
 
 async function initGame() {
     const supabase = window.supabaseClient;
@@ -39,10 +39,11 @@ async function initGame() {
     profileGrade = profile.grado || 'primero';
     const name = profile.nombre || 'Estudiante';
     const userGreeting = document.getElementById('userGreeting');
-    if (userGreeting) userGreeting.innerText = `¡Hola ${name}! Vamos a practicar con manzanas: elige la respuesta correcta para avanzar.`;
+    if (userGreeting) userGreeting.innerText = `¡Hola ${name}! Vamos a aprender formas. ¿Puedes identificarlas?`;
 
     if (profileGrade === 'segundo') totalRounds = 7;
 
+    usedShapes = [];
     renderRound();
 }
 
@@ -50,26 +51,41 @@ function randomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Banco de formas disponibles
+const shapesBank = [
+    { name: 'Círculo', svg: 'circle', display: '●', description: 'Forma redonda' },
+    { name: 'Cuadrado', svg: 'square', display: '■', description: 'Forma con 4 lados iguales' },
+    { name: 'Triángulo', svg: 'triangle', display: '▲', description: 'Forma con 3 lados' },
+    { name: 'Rectángulo', svg: 'rectangle', display: '▭', description: 'Forma alargada con 4 lados' },
+    { name: 'Estrella', svg: 'star', display: '★', description: 'Forma puntuda' }
+];
+
 function generateQuestion(grade) {
-    const max = grade === 'segundo' ? 20 : 10;
-    const min = 1;
-    const a = randomNumber(min, Math.min(6, max)); // keep groups small and countable
-    const b = randomNumber(min, Math.min(6, max));
-    return { a, b, answer: a + b };
+    let shape;
+    let attempts = 0;
+    const maxAttempts = 20;
+
+    do {
+        shape = shapesBank[randomNumber(0, shapesBank.length - 1)];
+        attempts++;
+    } while (usedShapes.includes(shape.name) && attempts < maxAttempts);
+
+    usedShapes.push(shape.name);
+    return shape;
 }
 
-function makeChoices(correct, grade) {
+function makeChoices(correctShape) {
     const choices = new Set();
-    choices.add(correct);
+    choices.add(correctShape.name);
+
+    // Agregar opciones incorrectas
     while (choices.size < 4) {
-        const delta = Math.floor(Math.random() * 5) + 1; // 1..5
-        const sign = Math.random() < 0.5 ? -1 : 1;
-        let candidate = correct + sign * delta;
-        if (candidate < 0) candidate = Math.abs(candidate) + 1;
-        choices.add(candidate);
+        const randomShape = shapesBank[randomNumber(0, shapesBank.length - 1)];
+        choices.add(randomShape.name);
     }
+
     const arr = Array.from(choices);
-    // shuffle
+    // Mezclar opciones
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -78,40 +94,53 @@ function makeChoices(correct, grade) {
 }
 
 function renderRound() {
-    const q = generateQuestion(profileGrade);
-    currentAnswer = q.answer;
-    currentA = q.a;
-    currentB = q.b;
+    const shape = generateQuestion(profileGrade);
+    currentAnswer = shape.name;
+    currentShape = shape;
 
     const qText = document.getElementById('questionText');
     const roundText = document.getElementById('roundText');
     const feedback = document.getElementById('feedback');
     const actionButton = document.getElementById('actionButton');
 
-    if (qText) qText.innerText = `Si tengo ${q.a} manzanas y me regalan ${q.b}, ¿cuántas tengo?`;
+    if (qText) qText.innerText = '¿Qué forma es esta?';
     if (roundText) roundText.innerText = `Pregunta ${currentRound} de ${totalRounds}`;
     if (feedback) { feedback.innerText = ''; feedback.className = 'feedback'; }
     if (actionButton) { actionButton.style.display = 'none'; actionButton.disabled = false; }
 
     questionNeedsCorrecting = false;
 
-    // render apples
-    const left = document.getElementById('applesLeft');
-    const right = document.getElementById('applesRight');
-    if (left) left.innerHTML = '';
-    if (right) right.innerHTML = '';
-    for (let i = 0; i < q.a; i++) if (left) left.insertAdjacentHTML('beforeend', '<span class="apple">🍎</span>');
-    for (let i = 0; i < q.b; i++) if (right) right.insertAdjacentHTML('beforeend', '<span class="apple">🍎</span>');
+    // Renderizar la forma
+    const shapeDisplay = document.getElementById('shapeDisplay');
+    if (shapeDisplay) {
+        shapeDisplay.innerHTML = '';
+        const shapeElement = document.createElement('div');
+        shapeElement.className = 'shape-item';
 
-    // render choices (numbers only)
+        if (shape.svg === 'circle') {
+            shapeElement.innerHTML = '<svg viewBox="0 0 100 100" class="shape-svg"><circle cx="50" cy="50" r="40" class="shape-fill"/></svg>';
+        } else if (shape.svg === 'square') {
+            shapeElement.innerHTML = '<svg viewBox="0 0 100 100" class="shape-svg"><rect x="20" y="20" width="60" height="60" class="shape-fill"/></svg>';
+        } else if (shape.svg === 'triangle') {
+            shapeElement.innerHTML = '<svg viewBox="0 0 100 100" class="shape-svg"><polygon points="50,10 90,90 10,90" class="shape-fill"/></svg>';
+        } else if (shape.svg === 'rectangle') {
+            shapeElement.innerHTML = '<svg viewBox="0 0 100 100" class="shape-svg"><rect x="15" y="30" width="70" height="40" class="shape-fill"/></svg>';
+        } else if (shape.svg === 'star') {
+            shapeElement.innerHTML = '<svg viewBox="0 0 100 100" class="shape-svg"><polygon points="50,15 61,35 82,35 65,48 72,68 50,55 28,68 35,48 18,35 39,35" class="shape-fill"/></svg>';
+        }
+
+        shapeDisplay.appendChild(shapeElement);
+    }
+
+    // Renderizar opciones
     const options = document.getElementById('options');
     if (!options) return;
     options.innerHTML = '';
-    const choices = makeChoices(q.answer, profileGrade);
+    const choices = makeChoices(shape);
     choices.forEach(choice => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
-        btn.innerHTML = `<div class="opt-number">${choice}</div>`;
+        btn.innerHTML = `<div class="opt-text">${choice}</div>`;
         btn.addEventListener('click', () => handleChoice(choice, btn));
         options.appendChild(btn);
     });
@@ -153,7 +182,7 @@ async function handleChoice(answerValue, btn) {
             earnedPoints += pointsPerCorrect;
         }
         if (feedback) {
-            feedback.innerText = `¡Muy bien! Si tengo ${currentA} manzanas y me regalan ${currentB}, ahora tengo ${currentAnswer}.`;
+            feedback.innerText = `¡Muy bien! Es un ${currentAnswer}. ${currentShape.description}. ¡Excelente!`;
             feedback.classList.add('correct');
         }
         if (btn) btn.classList.add('selected-correct');
@@ -164,7 +193,7 @@ async function handleChoice(answerValue, btn) {
     } else {
         questionNeedsCorrecting = true;
         if (feedback) {
-            feedback.innerText = `Casi... Si tengo ${currentA} manzanas y me regalan ${currentB}, ahora tengo ${currentAnswer}. Presiona corregir para intentarlo otra vez.`;
+            feedback.innerText = `Casi... Es un ${currentAnswer}. ${currentShape.description}. ¡Presiona corregir para intentarlo otra vez!`;
             feedback.classList.add('wrong');
         }
         if (btn) btn.classList.add('selected-wrong');
@@ -174,7 +203,7 @@ async function handleChoice(answerValue, btn) {
         }
     }
 
-    answersLog.push({ question: `${currentA} + ${currentB}`, respuesta: answerValue, correct });
+    answersLog.push({ question: `¿Qué forma es esta?`, respuesta: answerValue, correct });
 
     // Remover listener anterior para evitar acumulación
     if (actionButton) {
@@ -204,7 +233,7 @@ async function finishGame() {
 
     if (questionCard) questionCard.style.display = 'none';
     if (endScreen) endScreen.style.display = 'block';
-    if (finalText) finalText.innerText = `Felicidades, has ganado ${earnedPoints} puntos de exp.`;
+    if (finalText) finalText.innerText = `¡Felicidades! Has ganado ${earnedPoints} puntos de exp. ¡Conoces muy bien las formas!`;
 
     const progress = await saveProgress();
     if (newTotalText) newTotalText.innerText = `Tu total ahora es ${progress.puntos} xp.`;
@@ -218,6 +247,7 @@ async function finishGame() {
         }, '*');
     }
 }
+
 function getProgressLevel(points) {
     points = parseInt(points, 10) || 0;
     if (points < 50) return '🌱 Semilla';

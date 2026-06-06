@@ -51,7 +51,7 @@ window.addEventListener('message', async (event) => {
         setTimeout(() => {
             closeGameOverlay();
         }, 10000);
-        
+
         const supabase = window.supabaseClient;
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
@@ -142,19 +142,19 @@ function renderModules(profile) {
         primero: [
             { subtitle: "1 al 10", title: "Sumas básicas", desc: "Practica sumas fáciles.", icon: "➕", page: "sumas.html" },
             { subtitle: "1 al 10", title: "Restas básicas", desc: "Resuelve restas paso a paso.", icon: "➖", page: "restas.html" },
-            { subtitle: "Patrones", title: "Series de 2 en 2", desc: "Sigue los números.", icon: "2️⃣", page: "" },
-            { subtitle: "Formas", title: "Formas básicas", desc: "Conoce las figuras.", icon: "⬜", page: "" }
+            { subtitle: "Patrones", title: "Series de 2 en 2", desc: "Sigue los números.", icon: "2️⃣", page: "series-2.html" },
+            { subtitle: "Formas", title: "Formas básicas", desc: "Conoce las figuras.", icon: "⬜", page: "formas.html" }
         ],
         segundo: [
             { subtitle: "10 al 25", title: "Sumas avanzadas", desc: "Sumas más grandes.", icon: "➕", page: "sumas-avanzadas.html" },
             { subtitle: "10 al 20", title: "Restas avanzadas", desc: "Opera restas complejas.", icon: "➖", page: "restas-avanzadas.html" },
             { subtitle: "Tablas", title: "Multiplicaciones", desc: "Las primeras mult.", icon: "✖️", page: "multiplicaciones.html" },
-            { subtitle: "5 en 5", title: "Series de 5 en 5", desc: "Patrones numéricos.", icon: "5️⃣", page: "" }
+            { subtitle: "5 en 5", title: "Series de 5 en 5", desc: "Patrones numéricos.", icon: "5️⃣", page: "series-5.html" }
         ]
     };
 
     const modules = modulesByGrade[grade] || modulesByGrade.primero;
-    
+
     modulesGrid.innerHTML = modules.map((m, idx) => `
         <article class="module-card card-${(idx % 4) + 1}" data-page="${m.page || ''}">
             <p class="subtitle">${m.subtitle}</p>
@@ -334,10 +334,10 @@ async function renderTeacherView(profile) {
     teacherView.style.display = 'block';
 
     const degreeText = profile.grado === 'segundo' ? 'Segundo grado' : 'Primero';
-    
+
     const teacherTitle = document.getElementById('teacherTitle');
     const teacherGradeLabel = document.getElementById('teacherGradeLabel');
-    
+
     if (teacherTitle) teacherTitle.innerText = `Panel de docente - ${degreeText}`;
     if (teacherGradeLabel) teacherGradeLabel.innerText = `Listado de estudiantes de ${degreeText} - ${profile.institucion}`;
 
