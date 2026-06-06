@@ -191,7 +191,7 @@ app.get('/api/teacher/student/:userId/report', async (req, res) => {
   const [{ data: studentProfile, error: profileError }, { data: progressData, error: progressError }, { data: resultados, error: resultadosError }] = await Promise.all([
     supabaseAdmin.from('profiles').select('nombre, apellido, grado').eq('id', userId).maybeSingle(),
     supabaseAdmin.from('progreso').select('puntos, nivel').eq('user_id', userId).maybeSingle(),
-    supabaseAdmin.from('resultados').select('operacion, correcta, fecha').eq('user_id', userId).order('fecha', { ascending: false })
+    supabaseAdmin.from('resultados').select('operacion, respuesta, correcta, fecha').eq('user_id', userId).order('fecha', { ascending: false })
   ]);
 
   if (profileError || progressError || resultadosError) {

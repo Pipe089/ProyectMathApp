@@ -107,7 +107,7 @@ body {
     margin-bottom: 18px;
 }
 
-.apples-group {
+.pears-group {
     min-width: 140px;
     display: flex;
     flex-wrap: wrap;
@@ -115,11 +115,11 @@ body {
     justify-content: center;
 }
 
-.apple {
+.pear {
     font-size: 34px;
 }
 
-.plus-sign {
+.minus-sign {
     font-size: 30px;
     color: #fff;
 }

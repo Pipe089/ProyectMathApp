@@ -17,9 +17,49 @@ document.addEventListener("DOMContentLoaded", () => {
     if (backButton) {
         backButton.addEventListener("click", hideStudentReport);
     }
+
+    const closeOverlay = document.getElementById('closeGameOverlay');
+    if (closeOverlay) {
+        closeOverlay.addEventListener('click', closeGameOverlay);
+    }
 });
 
 document.getElementById("btnLogout").addEventListener("click", logout);
+
+function openGameOverlay(page) {
+    const overlay = document.getElementById('gameOverlay');
+    const iframe = document.getElementById('gameOverlayFrame');
+    if (!overlay || !iframe) return;
+
+    iframe.src = page;
+    overlay.style.display = 'flex';
+    document.querySelector('.main-content').style.overflow = 'hidden';
+}
+
+function closeGameOverlay() {
+    const overlay = document.getElementById('gameOverlay');
+    const iframe = document.getElementById('gameOverlayFrame');
+    if (!overlay || !iframe) return;
+
+    iframe.src = '';
+    overlay.style.display = 'none';
+    document.querySelector('.main-content').style.overflow = 'auto';
+}
+
+window.addEventListener('message', async (event) => {
+    if (event.data.type === 'gameCompleted') {
+        setTimeout(() => {
+            closeGameOverlay();
+        }, 10000);
+        
+        const supabase = window.supabaseClient;
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            const progress = await loadProgress(user.id);
+            renderProgress(progress);
+        }
+    }
+});
 
 async function init() {
     const supabase = window.supabaseClient;
@@ -65,8 +105,6 @@ async function init() {
             return;
         }
 
-        document.getElementById("bienvenida").innerText =
-            `Bienvenido ${profile.nombre} ${profile.apellido} (${profile.rol})`;
         document.getElementById("formExtra").style.display = "none";
 
         if (profile.rol === 'docente') {
@@ -78,6 +116,14 @@ async function init() {
         renderProgress(progress);
         renderModules(profile);
 
+        const studentDashboard = document.getElementById("studentDashboard");
+        const heroTitle = document.getElementById("heroTitle");
+        const avatarName = document.getElementById("avatarName");
+
+        if (studentDashboard) studentDashboard.style.display = "block";
+        if (heroTitle) heroTitle.innerHTML = `¡Bienvenido <span id="heroName">${profile.nombre}</span>!`;
+        if (avatarName) avatarName.innerText = profile.nombre || "Usuario";
+
     } catch (err) {
         console.error(err);
         document.body.innerHTML = "Error inesperado ❌";
@@ -85,54 +131,59 @@ async function init() {
 }
 
 function renderModules(profile) {
-    const modulesSection = document.getElementById("modules");
     const modulesGrid = document.getElementById("modulesGrid");
-    const gradeLabel = document.getElementById("grade-label");
+    const modulesSubtitle = document.getElementById("modulesSubtitle");
 
-    const name = profile.nombre || "";
     const grade = profile.grado || "primero";
     const gradoTexto = grade === "segundo" ? "2.º grado" : "1.º grado";
-
-    gradeLabel.innerText = `Bienvenido ${name}. Estos son los módulos para ${gradoTexto}.`;
+    modulesSubtitle.innerText = `Bienvenido ${profile.nombre}. Estos son los módulos para ${gradoTexto}.`;
 
     const modulesByGrade = {
         primero: [
-            { title: "Sumas básicas", subtitle: "1 al 10", description: "Practica sumas fáciles con imágenes y fichas interactivas.", page: "sumas.html" },
-            { title: "Restas básicas", subtitle: "1 al 10", description: "Resuelve restas paso a paso para comprender el resultado." },
-            { title: "Series de 2 en 2", subtitle: "Patrones numéricos", description: "Sigue los números y completa la secuencia." },
-            { title: "Comparar números", subtitle: "Mayor o menor", description: "Aprende a ordenar y comparar números de forma divertida." },
-            { title: "Bingo de números", subtitle: "0 al 20", description: "Juega al bingo resolviendo ejercicios rápidos." }
+            { subtitle: "1 al 10", title: "Sumas básicas", desc: "Practica sumas fáciles.", icon: "➕", page: "sumas.html" },
+            { subtitle: "1 al 10", title: "Restas básicas", desc: "Resuelve restas paso a paso.", icon: "➖", page: "restas.html" },
+            { subtitle: "Patrones", title: "Series de 2 en 2", desc: "Sigue los números.", icon: "2️⃣", page: "" },
+            { subtitle: "Formas", title: "Formas básicas", desc: "Conoce las figuras.", icon: "⬜", page: "" }
         ],
         segundo: [
-            { title: "Sumas avanzadas", subtitle: "10 al 25", description: "Ejercita sumas más grandes con retos crecientes.", page: "sumas-avanzadas.html" },
-            { title: "Restas avanzadas", subtitle: "10 al 20", description: "Opera restas con números más altos y verifica tus respuestas." },
-            { title: "Multiplicaciones", subtitle: "Tablas básicas", description: "Descubre las primeras multiplicaciones con juegos visuales." },
-            { title: "Series de 5 en 5", subtitle: "Patrones numéricos", description: "Completa secuencias y aprende a contar de 5 en 5." },
-            { title: "Geometría simple", subtitle: "Figuras y formas", description: "Reconoce figuras geométricas y sus nombres." }
+            { subtitle: "10 al 25", title: "Sumas avanzadas", desc: "Sumas más grandes.", icon: "➕", page: "sumas-avanzadas.html" },
+            { subtitle: "10 al 20", title: "Restas avanzadas", desc: "Opera restas complejas.", icon: "➖", page: "" },
+            { subtitle: "Tablas", title: "Multiplicaciones", desc: "Las primeras mult.", icon: "✖️", page: "" },
+            { subtitle: "5 en 5", title: "Series de 5 en 5", desc: "Patrones numéricos.", icon: "5️⃣", page: "" }
         ]
     };
 
     const modules = modulesByGrade[grade] || modulesByGrade.primero;
-    modulesGrid.innerHTML = modules.map(module => `
-        <article class="module-card">
-            <div class="module-badge">${module.subtitle}</div>
-            <h4>${module.title}</h4>
-            <p>${module.description}</p>
-            <button class="module-btn" data-page="${module.page || ''}">Entrar</button>
+    
+    modulesGrid.innerHTML = modules.map((m, idx) => `
+        <article class="module-card card-${(idx % 4) + 1}" data-page="${m.page || ''}">
+            <p class="subtitle">${m.subtitle}</p>
+            <p class="title">${m.title}</p>
+            <p class="desc">${m.desc}</p>
+            <div class="illustration">${m.icon}</div>
+            <button class="btn-enter" data-page="${m.page || ''}">Entrar</button>
         </article>
     `).join("");
 
-    modulesSection.style.display = "block";
-
-    modulesGrid.querySelectorAll('.module-btn').forEach((button, index) => {
-        const page = button.dataset.page;
-        if (page) {
-            button.addEventListener('click', () => {
-                window.location.href = page;
-            });
-        } else {
-            button.addEventListener('click', () => {
+    modulesGrid.querySelectorAll('.module-card').forEach(card => {
+        const page = card.dataset.page;
+        card.addEventListener('click', () => {
+            if (!page) {
                 document.getElementById('msg').innerText = 'Próximamente disponible.';
+                return;
+            }
+            openGameOverlay(page);
+        });
+
+        const button = card.querySelector('.btn-enter');
+        if (button) {
+            button.addEventListener('click', event => {
+                event.stopPropagation();
+                if (!page) {
+                    document.getElementById('msg').innerText = 'Próximamente disponible.';
+                    return;
+                }
+                openGameOverlay(page);
             });
         }
     });
@@ -163,13 +214,74 @@ async function loadProgress(userId) {
     return { puntos: progress.puntos || 0, nivel: progress.nivel || 'Iniciando' };
 }
 
+function getLevelFromPoints(points) {
+    points = parseInt(points, 10) || 0;
+    if (points < 50) return '🌱 Semilla';
+    if (points < 200) return '📘 Novato';
+    if (points < 500) return '🌟 Aprendiz';
+    if (points < 1000) return '🔆 Practicante';
+    if (points < 2000) return '🔥 Experto';
+    if (points < 3500) return '👑 Maestro';
+    if (points < 5000) return '💠 Gran Maestro';
+    return '💎 Leyenda';
+}
+
 function renderProgress(progress) {
     const card = document.getElementById('progressCard');
     const level = document.getElementById('progressLevel');
     const points = document.getElementById('progressPoints');
 
-    level.innerText = progress.nivel || 'Iniciando';
+    const calculatedLevel = getLevelFromPoints(progress.puntos || 0);
+    level.innerText = calculatedLevel;
     points.innerText = `${progress.puntos || 0} xp`;
+    card.style.display = 'flex';
+}
+
+function getLevelInfo(points) {
+    points = parseInt(points, 10) || 0;
+    const levels = [
+        { min: 0, max: 49, label: '🌱 Semilla' },
+        { min: 50, max: 199, label: '📘 Novato' },
+        { min: 200, max: 499, label: '🌟 Aprendiz' },
+        { min: 500, max: 999, label: '🔆 Practicante' },
+        { min: 1000, max: 1999, label: '🔥 Experto' },
+        { min: 2000, max: 3499, label: '👑 Maestro' },
+        { min: 3500, max: 4999, label: '💠 Gran Maestro' },
+        { min: 5000, max: Infinity, label: '💎 Leyenda' }
+    ];
+
+    for (const lvl of levels) {
+        if (points >= lvl.min && points <= lvl.max) return { ...lvl };
+    }
+    return levels[0];
+}
+
+function renderProgress(progress) {
+    const card = document.getElementById('progressCard');
+    const levelEl = document.getElementById('progressLevel');
+    const pointsEl = document.getElementById('progressPoints');
+    const fill = document.getElementById('progressBarFill');
+    const percentEl = document.getElementById('progressPercent');
+
+    const pts = parseInt(progress.puntos || 0, 10);
+    const info = getLevelInfo(pts);
+    levelEl.innerText = info.label;
+    pointsEl.innerText = `${pts} xp`;
+
+    // calculate percentage toward next level
+    let percent = 100;
+    if (info.max === Infinity) {
+        percent = 100;
+    } else {
+        const span = info.max - info.min + 1;
+        percent = Math.round(((pts - info.min) / span) * 100);
+        if (percent < 0) percent = 0;
+        if (percent > 100) percent = 100;
+    }
+
+    if (fill) fill.style.width = percent + '%';
+    if (percentEl) percentEl.innerText = percent + '%';
+
     card.style.display = 'flex';
 }
 
@@ -208,31 +320,38 @@ function handleRoleChange() {
 async function renderTeacherView(profile) {
     const supabase = window.supabaseClient;
     const teacherView = document.getElementById('teacherView');
-    const modulesSection = document.getElementById('modules');
-    const progressCard = document.getElementById('progressCard');
+    const studentDashboard = document.getElementById('studentDashboard');
     const studentsContainer = document.getElementById('studentsContainer');
     const studentReport = document.getElementById('studentReport');
 
-    document.getElementById('bienvenida').innerText =
-        `Bienvenido ${profile.nombre} ${profile.apellido} (${profile.rol})`;
+    if (!teacherView || !studentsContainer) {
+        console.error('Teacher view elements not found');
+        return;
+    }
 
-    modulesSection.style.display = 'none';
-    progressCard.style.display = 'none';
-    studentReport.style.display = 'none';
+    if (studentDashboard) studentDashboard.style.display = 'none';
+    if (studentReport) studentReport.style.display = 'none';
     teacherView.style.display = 'block';
 
     const degreeText = profile.grado === 'segundo' ? 'Segundo grado' : 'Primero';
-    document.getElementById('teacherTitle').innerText = `Panel de docente - ${degreeText}`;
-    document.getElementById('teacherGradeLabel').innerText = `Listado de estudiantes de ${degreeText} - ${profile.institucion}`;
+    
+    const teacherTitle = document.getElementById('teacherTitle');
+    const teacherGradeLabel = document.getElementById('teacherGradeLabel');
+    
+    if (teacherTitle) teacherTitle.innerText = `Panel de docente - ${degreeText}`;
+    if (teacherGradeLabel) teacherGradeLabel.innerText = `Listado de estudiantes de ${degreeText} - ${profile.institucion}`;
+
+    const avatarName = document.getElementById('avatarName');
+    if (avatarName) avatarName.innerText = profile.nombre || 'Usuario';
 
     if (!profile.institucion) {
-        document.getElementById('studentsContainer').innerHTML = `<div class="alert alert-warning">No se encontró institución para este docente. Actualiza tu perfil.</div>`;
+        studentsContainer.innerHTML = `<div class="alert alert-warning">No se encontró institución para este docente. Actualiza tu perfil.</div>`;
         return;
     }
 
     const { students, error, debug } = await loadStudentsByGrade(profile.grado, profile.institucion);
     if (error) {
-        document.getElementById('studentsContainer').innerHTML = `<div class="alert alert-danger">Error cargando estudiantes: ${escapeHtml(error)}</div>`;
+        studentsContainer.innerHTML = `<div class="alert alert-danger">Error cargando estudiantes: ${escapeHtml(error)}</div>`;
         return;
     }
 
@@ -364,6 +483,7 @@ async function showStudentReport(userId) {
                     <thead>
                         <tr>
                             <th>Operación</th>
+                            <th>Respuesta</th>
                             <th>Correcta</th>
                             <th>Fecha</th>
                         </tr>
@@ -372,6 +492,7 @@ async function showStudentReport(userId) {
                         ${resultados.map(result => `
                             <tr>
                                 <td>${result.operacion}</td>
+                                <td>${result.respuesta ?? ''}</td>
                                 <td>${result.correcta ? 'Sí' : 'No'}</td>
                                 <td>${new Date(result.fecha).toLocaleString()}</td>
                             </tr>
@@ -455,8 +576,10 @@ async function guardarPerfil() {
             return;
         }
 
-        document.getElementById("bienvenida").innerText =
-            `Bienvenido ${nombre} ${apellido} (${rol})`;
+        const bienvenidaElement = document.getElementById("bienvenida");
+        if (bienvenidaElement) {
+            bienvenidaElement.innerText = `Bienvenido ${nombre} ${apellido} (${rol})`;
+        }
 
         document.getElementById("formExtra").style.display = "none";
         msg.innerText = "Perfil guardado correctamente ✅";
@@ -467,6 +590,8 @@ async function guardarPerfil() {
             const progress = await loadProgress(user.id);
             renderProgress(progress);
             renderModules({ nombre, apellido, grado, rol });
+            const studentDashboard = document.getElementById('studentDashboard');
+            if (studentDashboard) studentDashboard.style.display = 'block';
         }
 
     } catch (err) {
