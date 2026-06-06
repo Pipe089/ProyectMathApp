@@ -132,7 +132,7 @@ body {
 }
 
 .option-btn {
-    background: rgba(255,255,255,0.95);
+    background: rgba(255, 255, 255, 0.95);
     border: none;
     border-radius: 12px;
     padding: 10px;
@@ -144,14 +144,35 @@ body {
     font-weight: 800;
 }
 
-.option-btn:disabled { opacity: 0.6; cursor: default; }
+.option-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
 
-.opt-visual { font-size: 18px; max-height: 48px; overflow: hidden; }
-.opt-number { font-size: 18px; color: #1e1e1e; }
+.opt-visual {
+    font-size: 18px;
+    max-height: 48px;
+    overflow: hidden;
+}
 
-.option-btn.selected-correct { box-shadow: 0 6px 18px rgba(30,200,120,0.22); border: 2px solid rgba(30,200,120,0.4); }
-.option-btn.selected-wrong { box-shadow: 0 6px 18px rgba(255,80,80,0.12); border: 2px solid rgba(255,80,80,0.2); }
-.correct-opt { outline: 3px solid rgba(30,200,120,0.15); }
+.opt-number {
+    font-size: 18px;
+    color: #1e1e1e;
+}
+
+.option-btn.selected-correct {
+    box-shadow: 0 6px 18px rgba(30, 200, 120, 0.22);
+    border: 2px solid rgba(30, 200, 120, 0.4);
+}
+
+.option-btn.selected-wrong {
+    box-shadow: 0 6px 18px rgba(255, 80, 80, 0.12);
+    border: 2px solid rgba(255, 80, 80, 0.2);
+}
+
+.correct-opt {
+    outline: 3px solid rgba(30, 200, 120, 0.15);
+}
 
 .question-card input {
     width: 100%;
@@ -171,11 +192,17 @@ body {
 }
 
 .feedback.correct {
-    color: #a4ffb7;
+    color: #1d4a0d;
+    font-weight: bold;
+    text-align: left;
+    font-size: 1.5rem;
 }
 
 .feedback.wrong {
-    color: #ffbbc2;
+    color: #7b4128;
+    font-weight: bold;
+    text-align: left;
+    font-size: 1.5rem;
 }
 
 .end-screen h2 {

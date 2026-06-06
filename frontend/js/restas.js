@@ -92,7 +92,7 @@ function renderRound() {
     if (roundText) roundText.innerText = `Pregunta ${currentRound} de ${totalRounds}`;
     if (feedback) { feedback.innerText = ''; feedback.className = 'feedback'; }
     if (actionButton) { actionButton.style.display = 'none'; actionButton.disabled = false; }
-    
+
     questionNeedsCorrecting = false;
 
     // render pears
@@ -176,7 +176,9 @@ async function handleChoice(answerValue, btn) {
 
     answersLog.push({ question: `${currentA} - ${currentB}`, respuesta: answerValue, correct });
 
+    // Remover listener anterior para evitar acumulación
     if (actionButton) {
+        actionButton.onclick = null;
         actionButton.onclick = async () => {
             if (lastAnswerCorrect) {
                 if (currentRound >= totalRounds) {
@@ -206,7 +208,7 @@ async function finishGame() {
 
     const progress = await saveProgress();
     if (newTotalText) newTotalText.innerText = `Tu total ahora es ${progress.puntos} xp.`;
-    
+
     // Notificar al dashboard que cierre el overlay y actualice los puntos
     if (window.parent !== window) {
         window.parent.postMessage({
