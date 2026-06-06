@@ -25,8 +25,3 @@ Este es un proyecto web de gamificación en matemáticas para niños de primer y
 - Resultados y progreso guardados por usuario en la base de datos
 - Mejora en UI y UX
 - Dashboard tanto para docente, como para estudiante
-<<<<<<< HEAD
-- Corrección de errores
-=======
-- Corrección de errores
->>>>>>> feature/15-conectividad-docker-supabase
