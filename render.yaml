@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: proyectmathapp
+    env: node
+    branch: main
+    root: backend
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
