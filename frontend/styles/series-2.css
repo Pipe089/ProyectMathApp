@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -7,7 +8,7 @@
 body {
     min-height: 100vh;
     background: radial-gradient(circle at top left, #84d2ff 0%, #558bff 45%, #372bb0 100%);
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Raleway', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -197,7 +198,7 @@ body {
     color: white;
     font-weight: 600;
     font-size: 1.1rem;
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Raleway', sans-serif;
 }
 
 .option-btn:hover:not(:disabled) {
@@ -292,7 +293,7 @@ body {
     font-size: 1rem;
     color: #333;
     transition: all 0.3s ease;
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Raleway', sans-serif;
     align-self: center;
 }
 
